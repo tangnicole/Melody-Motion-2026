@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School CCA Concert Ticket Booking</title>
+    <style>
+        /* CSS: Styling and Layout */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f3f6;
+        }
+        header {
+            text-align: center;
+            background-color: #4a154b;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        .summary-box {
+            background-color: #f9f9f9;
+            border-left: 5px solid #4a154b;
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 4px;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        .total {
+            font-weight: bold;
+            color: #4a154b;
+            border-top: 1px solid #ddd;
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Melody & Motion 2026</h1>
+        <p>Annual CCA Performing Arts Concert</p>
+    </header>
+
+    <div class="container">
+        <!-- HTML: Booking Form -->
+        <div class="form-group">
+            <label for="student-name">Student Name</label>
+            <input type="text" id="student-name" placeholder="Enter your full name">
+        </div>
+
+        <div class="form-group">
+            <label for="ticket-type">Select Seating Zone</label>
+            <select id="ticket-type" onchange="calculateTotal()">
+                <option value="10" data-name="Standard (Back Rows)">Standard - $10.00</option>
+                <option value="15" data-name="VIP (Front Rows)">VIP - $15.00</option>
+                <option value="5" data-name="Student Concession">Student Concession - $5.00</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="ticket-qty">Quantity</label>
+            <input type="number" id="ticket-qty" min="1" max="5" value="1" oninput="calculateTotal()">
+            <small style="color: #666;">Max 5 tickets per student.</small>
+        </div>
+
+        <!-- HTML: Dynamic Summary Box -->
+        <div class="summary-box">
+            <h3>Booking Summary</h3>
+            <div class="summary-item">
+                <span>Ticket Type:</span>
+                <span id="summary-type">Standard (Back Rows)</span>
+            </div>
+            <div class="summary-item">
+                <span>Price per Ticket:</span>
+                <span id="summary-price">$10.00</span>
+            </div>
+            <div class="summary-item total">
+                <span>Total Amount:</span>
+                <span>$<span id="summary-total">10.00</span></span>
+            </div>
+        </div>
+
+        <button onclick="bookTickets()">Confirm Booking</button>
+    </div>
+
+    <script>
+        /* JavaScript: Calculations & Confirmation */
+        function calculateTotal() {
+            const typeSelect = document.getElementById('ticket-type');
+            const qtyInput = document.getElementById('ticket-qty');
+            
+            // Get selected ticket details
+            const price = parseFloat(typeSelect.value);
+            const typeName = typeSelect.options[typeSelect.selectedIndex].getAttribute('data-name');
+            let qty = parseInt(qtyInput.value);
+
+            // Handle invalid or empty inputs
+            if (isNaN(qty) || qty < 1) qty = 1;
+            if (qty > 5) qty = 5; 
+
+            // Calculate total
+            const total = price * qty;
+
+            // Update UI text
+            document.getElementById('summary-type').innerText = typeName;
+            document.getElementById('summary-price').innerText = `$${price.toFixed(2)}`;
+            document.getElementById('summary-total').innerText = total.toFixed(2);
+        }
+
+        function bookTickets() {
+            const studentName = document.getElementById('student-name').value.trim();
+            const totalAmount = document.getElementById('summary-total').innerText;
+            const qty = document.getElementById('ticket-qty').value;
+
+            if (studentName === "") {
+                alert("Please enter your name to book tickets.");
+                return;
+            }
+
+            // Booking success message
+            alert(`Booking Confirmed!\nThank you, ${studentName}.\nYour ${qty} ticket(s) have been reserved.\nTotal Paid: $${totalAmount}`);
+            
+            // Reset form
+            document.getElementById('student-name').value = "";
+            document.getElementById('ticket-qty').value = "1";
+            document.getElementById('ticket-type').selectedIndex = 0;
+            calculateTotal();
+        }
+    </script>
+
+</body>
+</html>
